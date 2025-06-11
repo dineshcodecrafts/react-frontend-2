@@ -4,58 +4,65 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getData, deleteData } from "../../services/api";
-import { showSuccessToast } from '../../components/toastConfig';
+import { showSuccessToast } from "../../components/toastConfig";
 import "../../main.css";
+import { ClipLoader } from "react-spinners";
 
-const ListData  = () => {
-
-    
-
-
+const ListData = () => {
   const count = useSelector((state) => state.counter.value);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
   const location = useLocation() || {};
   // const state = location || {}; // ✅ handle null/undefined safely
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // setTimeout(() => setLoading(false), 2000);
     loadUsers();
-   
   }, []);
-
-
-  
 
   const loadUsers = async () => {
     const data = await getData();
+    setLoading(false);
     setItems(data);
   };
 
   const handleEditButton = (item) => {
-    navigate(`/EditData/${item.id}`, { state: { ...item, method: 'edit' } });
+    navigate(`/EditData/${item.id}`, { state: { ...item, method: "edit" } });
   };
 
   const handleDeleteButton = async (id) => {
     try {
-        await deleteData(id);
-        await loadUsers();
-        showSuccessToast("Record Successfully Saved!"); // Cleaner call
+      await deleteData(id);
+      await loadUsers();
+      showSuccessToast("Record Successfully Saved!"); // Cleaner call
     } catch (err) {
       console.error("Fetch error:", err);
     }
   };
 
   const handleAdd = () => {
-    let method = 'add';
-    navigate('/AddData/', { state: { method } }); // ✅ Correct: state is an object
+    let method = "add";
+    navigate("/AddData/", { state: { method } }); // ✅ Correct: state is an object
   };
 
   return (
-   <>
-   <p>{location.state?.message || 'No message found'}</p>
-   <p>{location.state?.user || 'No message found'}</p>
-      <button  onClick={() => { handleAdd(); }} >Add</button>
+    <>
+      {loading ? (
+        <ClipLoader color="#36d7b7" size={50} />
+      ) : (
+        <div>Data Loaded ✅</div>
+      )}
+      <p>{location.state?.message || "No message found"}</p>
+      <p>{location.state?.user || "No message found"}</p>
+      <button
+        onClick={() => {
+          handleAdd();
+        }}
+      >
+        Add
+      </button>
       <p>Welcome Home Page {count}</p>
       <table>
         <thead>
@@ -66,7 +73,15 @@ const ListData  = () => {
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(items) &&
+          {loading ? (
+            // <ClipLoader color="#36d7b7" size={50} />
+            <tr>
+              <td colSpan="3" style={{ textAlign: "center" }}>
+                <ClipLoader color="#36d7b7" size={50} />
+              </td>
+            </tr>
+          ) : (
+            Array.isArray(items) &&
             items.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
@@ -74,7 +89,7 @@ const ListData  = () => {
                 <td>
                   <button
                     onClick={() => {
-                        handleEditButton(item);
+                      handleEditButton(item);
                     }}
                   >
                     Edit
@@ -88,7 +103,8 @@ const ListData  = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            ))
+          )}
         </tbody>
       </table>
     </>

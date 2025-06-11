@@ -6,7 +6,6 @@ import { showSuccessToast , showErrorToast} from '../../components/toastConfig';
 
 const AddData = () => {
 
-
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
     name: "",
@@ -14,52 +13,18 @@ const AddData = () => {
     password: "",
     });
 
-    const submitAddForm_old = async () => {
-        alert("add form");
-        try {
-            const response = await fetch(`http://127.0.0.1:8000/api/user/`, {
-                method: "POST",
-                headers: {
-                Authorization: `Bearer 26|4Sno0MHbjXwmTKixp2bvTx8hJh4ybTOCqbFJknHgcae17432`,
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                toast.success("Record Successfully Saved!", { 
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                });
-                navigate("/ListData", {   
-                state: { message: "New User Added Successfully!" },
-                });
-            } else {
-                alert("Add failed");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Something went wrong");
-        }
-    };
-
     const submitAddForm = async () => {
         const response = await addData(formData);
         if(response){
             showSuccessToast("Record Successfully Saved!"); // Cleaner call
             navigate("/ListData", {   
                 state: { message: "New User Added Successfully!" },
-                });
+            });
         }else{
             showErrorToast("Something went wrong");
             navigate("/ListData", {   
                 state: { message: "New User Added Failed!" },
-                });
+            });
         }   
     }
 

@@ -15,7 +15,7 @@ export const getData = async () => {
 
 
 export const deleteData = async (id) => { 
-    const response = await fetch(`http://127.0.0.1:8000/api/user/${id}`, {
+    const response = await fetch(`${API_URL}/user/${id}`, {
         method: "DELETE",
         headers: {
         Authorization: `Bearer 26|4Sno0MHbjXwmTKixp2bvTx8hJh4ybTOCqbFJknHgcae17432`,
@@ -39,7 +39,7 @@ export const updateData = async (id, formData) => {
 
 export const addData = async (formData) => { 
     try{
-        const response = await fetch(`http://127.0.0.1:8000/api/user/`, {
+        const response = await fetch(`${API_URL}/user/`, {
             method: "POST",
             headers: {
             Authorization: `Bearer 26|4Sno0MHbjXwmTKixp2bvTx8hJh4ybTOCqbFJknHgcae17432`,

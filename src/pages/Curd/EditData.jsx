@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import { updateData } from "../../services/api";
-
-import { showSuccessToast , showErrorToast} from '../../components/toastConfig';
+import { showSuccessToast, showErrorToast } from "../../components/toastConfig";
 
 const EditData = () => {
-
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -34,17 +31,19 @@ const EditData = () => {
   const submitUpdateForm = async () => {
     try {
       const res = await updateData(id, formData);
-      
+
       // Check if response exists before trying to parse JSON
       if (!res) {
         throw new Error("No response from server");
       }
-  
+
       const data = await res.json();
-  
+
       if (res.ok) {
         showSuccessToast(data.message || "User updated successfully!");
-        navigate("/ListData", { state: { message: "User updated successfully!" } });
+        navigate("/ListData", {
+          state: { message: "User updated successfully!" },
+        });
       } else {
         showErrorToast(data.error || "Update failed");
         navigate("/ListData", { state: { message: "Update failed" } });
@@ -52,7 +51,7 @@ const EditData = () => {
     } catch (error) {
       console.error("Error:", error);
       showErrorToast(error.message || "Something went wrong");
-      
+
       // Only use alert as a last resort
       if (!navigator.onLine) {
         alert("Network error - please check your internet connection");
@@ -60,7 +59,6 @@ const EditData = () => {
     }
   };
 
-  
   return (
     <>
       {/*  */}
@@ -106,9 +104,15 @@ const EditData = () => {
           */}
         </tbody>
       </table>
-      <button onClick={() => {submitUpdateForm()}}> Updates </button>
+      <button
+        onClick={() => {
+          submitUpdateForm();
+        }}
+      >
+        Updates
+      </button>
     </>
-  )
-}
+  );
+};
 
-export default EditData
+export default EditData;
